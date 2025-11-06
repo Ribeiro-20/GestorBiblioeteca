@@ -4,11 +4,17 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use HasFactory, Notifiable;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'nome',
         'email',
@@ -37,4 +43,28 @@ class User extends Authenticatable
     public function isAdmin() { return $this->tipo === 'admin'; }
     public function isBibliotecario() { return $this->tipo === 'bibliotecario'; }
     public function isLeitor() { return $this->tipo === 'leitor'; }
+    
+    /**
+     * Verifica se pode gerenciar empréstimos (Admin ou Bibliotecário)
+     */
+    public function podeGerenciarEmprestimos()
+    {
+        return in_array($this->tipo, ['admin', 'bibliotecario']);
+    }
+    
+    /**
+     * Relação com empréstimos
+     */
+    public function emprestimos()
+    {
+        return $this->hasMany(Emprestimo::class);
+    }
+    
+    /**
+     * Relação com reservas
+     */
+    public function reservas()
+    {
+        return $this->hasMany(Reserva::class);
+    }
 }
