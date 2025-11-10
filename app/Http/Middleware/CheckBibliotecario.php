@@ -16,14 +16,14 @@ class CheckBibliotecario
     public function handle(Request $request, Closure $next): Response
     {
         if (!auth()->check()) {
-            return redirect()->route('login')->with('error', 'Você precisa estar autenticado.');
+            return redirect()->route('login')->with('error', 'Precisa estar autenticado.');
         }
 
         $user = auth()->user();
         
         // Apenas admin e bibliotecario podem acessar
         if (!$user->podeGerenciarEmprestimos()) {
-            return redirect()->route('dashboard')->with('error', 'Você não tem permissão para acessar esta área. Apenas administradores e bibliotecários podem gerenciar empréstimos e biblioteca.');
+            return redirect()->route('dashboard')->with('error', 'Não tem permissão para aceder a esta área. Apenas administradores e bibliotecários podem gerir empréstimos e biblioteca.');
         }
 
         return $next($request);

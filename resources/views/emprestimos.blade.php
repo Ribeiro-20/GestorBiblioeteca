@@ -169,7 +169,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🔧 Iniciando carregamento de dados...');
+            console.log('Iniciando carregamento de dados...');
             carregarLivros();
             carregarUsuarios();
             document.getElementById('form-emprestimo').addEventListener('submit', realizarEmprestimo);
@@ -197,19 +197,19 @@
         async function carregarLivros() {
             const select = document.getElementById('livro-select');
             try {
-                console.log('📚 Carregando livros de:', `${API_BASE}/livros`);
+                console.log('A carregar livros de:', `${API_BASE}/livros`);
                 const response = await axios.get(`${API_BASE}/livros`);
-                console.log('✅ Resposta livros:', response.data);
+                console.log('Resposta livros:', response.data);
                 const livros = response.data.data;
                 
                 if (!livros || livros.length === 0) {
                     select.innerHTML = '<option value="">Nenhum livro cadastrado</option>';
-                    console.warn('⚠️ Nenhum livro encontrado');
+                    console.warn('Nenhum livro encontrado');
                     return;
                 }
                 
                 const disponiveis = livros.filter(l => l.estado === 'disponivel');
-                console.log(`📗 Livros disponíveis: ${disponiveis.length} de ${livros.length}`);
+                console.log(`Livros disponíveis: ${disponiveis.length} de ${livros.length}`);
                 
                 if (disponiveis.length === 0) {
                     select.innerHTML = '<option value="">Nenhum livro disponível no momento</option>';
@@ -220,17 +220,17 @@
                     disponiveis.map(livro => 
                         `<option value="${livro.id}">${livro.titulo} - ${livro.autor || 'Autor desconhecido'}</option>`
                     ).join('');
-                console.log('✅ Livros carregados com sucesso!');
+                console.log('Livros carregados com sucesso!');
             } catch (error) {
-                console.error('❌ Erro ao carregar livros:', error);
+                console.error('Erro ao carregar livros:', error);
                 console.error('Detalhes:', error.response);
-                select.innerHTML = '<option value="">❌ Erro ao carregar livros</option>';
+                select.innerHTML = '<option value="">Erro ao carregar livros</option>';
                 
                 // Mostrar alerta visual
                 if (error.response?.status === 403) {
-                    alert('⚠️ ERRO: Você não tem permissão para acessar esta funcionalidade. Entre como Admin ou Bibliotecário.');
+                    alert('ERRO: Não tem permissão para aceder a esta funcionalidade. Entre como Admin ou Bibliotecário.');
                 } else {
-                    alert('❌ Erro ao carregar livros: ' + (error.response?.data?.message || error.message));
+                    alert('Erro ao carregar livros: ' + (error.response?.data?.message || error.message));
                 }
             }
         }
@@ -239,14 +239,14 @@
         async function carregarUsuarios() {
             const select = document.getElementById('usuario-select');
             try {
-                console.log('👥 Carregando usuários de:', `${API_BASE}/usuarios`);
+                console.log('A carregar utilizadores de:', `${API_BASE}/usuarios`);
                 const response = await axios.get(`${API_BASE}/usuarios`);
-                console.log('✅ Resposta usuários:', response.data);
+                console.log('Resposta utilizadores:', response.data);
                 const usuarios = response.data.data;
                 
                 if (!usuarios || usuarios.length === 0) {
                     select.innerHTML = '<option value="">Nenhum leitor cadastrado</option>';
-                    console.warn('⚠️ Nenhum leitor encontrado');
+                    console.warn('Nenhum leitor encontrado');
                     return;
                 }
                 
@@ -254,17 +254,17 @@
                     usuarios.map(u => 
                         `<option value="${u.id}">${u.nome} ${u.numero_cartao ? '('+u.numero_cartao+')' : '('+u.email+')'}</option>`
                     ).join('');
-                console.log(`✅ ${usuarios.length} leitores carregados com sucesso!`);
+                console.log(`${usuarios.length} leitores carregados com sucesso!`);
             } catch (error) {
-                console.error('❌ Erro ao carregar usuários:', error);
+                console.error('Erro ao carregar utilizadores:', error);
                 console.error('Detalhes:', error.response);
-                select.innerHTML = '<option value="">❌ Erro ao carregar leitores</option>';
+                select.innerHTML = '<option value="">Erro ao carregar leitores</option>';
                 
                 // Mostrar alerta visual
                 if (error.response?.status === 403) {
-                    alert('⚠️ ERRO: Você não tem permissão para acessar esta funcionalidade. Entre como Admin ou Bibliotecário.');
+                    alert('ERRO: Não tem permissão para aceder a esta funcionalidade. Entre como Admin ou Bibliotecário.');
                 } else {
-                    alert('❌ Erro ao carregar leitores: ' + (error.response?.data?.message || error.message));
+                    alert('Erro ao carregar leitores: ' + (error.response?.data?.message || error.message));
                 }
             }
         }
@@ -516,7 +516,7 @@
                 }
             } catch (error) {
                 const msg = error.response?.data?.message || error.message;
-                alert('❌ Erro: ' + msg);
+                alert('Erro: ' + msg);
             }
         }
 

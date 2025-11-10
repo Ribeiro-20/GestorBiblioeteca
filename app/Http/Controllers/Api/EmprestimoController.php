@@ -51,7 +51,7 @@ class EmprestimoController extends Controller
         if (!auth()->check() || !auth()->user()->podeGerenciarEmprestimos()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Você não tem permissão para realizar empréstimos. Apenas administradores e bibliotecários.'
+                'message' => 'Não tem permissão para realizar empréstimos. Apenas administradores e bibliotecários.'
             ], 403);
         }
 
@@ -167,7 +167,7 @@ class EmprestimoController extends Controller
         if ($emprestimo->user_id !== $user->id && !$user->podeGerenciarEmprestimos()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Você não tem permissão para devolver este empréstimo'
+                'message' => 'Não tem permissão para devolver este empréstimo'
             ], 403);
         }
 

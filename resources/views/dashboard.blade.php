@@ -236,7 +236,7 @@
                         <div class="flex items-center mb-4">
                             <i class="fas fa-exclamation-triangle text-red-600 text-2xl mr-3"></i>
                             <div>
-                                <h4 class="text-red-800 font-bold text-lg">Atenção! Você tem livros atrasados</h4>
+                                <h4 class="text-red-800 font-bold text-lg">Atenção! Tem livros atrasados</h4>
                                 <p class="text-red-700">Por favor, devolva os livros o quanto antes para evitar penalidades.</p>
                             </div>
                         </div>
@@ -314,7 +314,7 @@
                     <div class="bg-white rounded-xl shadow-md p-12 mb-8 text-center">
                         <i class="fas fa-book-open text-gray-300 text-6xl mb-4"></i>
                         <h3 class="text-2xl font-bold text-gray-900 mb-2">Nenhum livro emprestado</h3>
-                        <p class="text-gray-600 mb-6">Você ainda não possui nenhum livro emprestado no momento.</p>
+                        <p class="text-gray-600 mb-6">Ainda não possui nenhum livro emprestado no momento.</p>
                         <a href="{{ route('meus-emprestimos') }}" 
                            class="inline-block bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold py-3 px-8 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition">
                             <i class="fas fa-history mr-2"></i>Ver Histórico
