@@ -21,6 +21,9 @@
         <!-- Axios for AJAX requests -->
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         
+        <!-- Alpine.js (CDN para compatibilidade com InfinityFree) -->
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        
         <style>
             body { font-family: 'Inter', sans-serif; }
             .biblioteca-gradient {

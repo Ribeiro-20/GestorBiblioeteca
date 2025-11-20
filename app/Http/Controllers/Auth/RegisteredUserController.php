@@ -34,17 +34,16 @@ class RegisteredUserController extends Controller
             'nome' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'tipo' => ['required', 'in:admin,bibliotecario,leitor'],
             'numero_cartao' => ['nullable', 'string', 'max:255', 'unique:users,numero_cartao'],
             'data_inscricao' => ['nullable', 'date'],
         ]);
 
-        // Criação do usuário
+        // Criação do usuário - sempre como "leitor"
         $user = User::create([
             'nome' => $request->nome,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'tipo' => $request->tipo,
+            'tipo' => 'leitor', // Todos os novos usuários são leitores
             'numero_cartao' => $request->numero_cartao,
             'data_inscricao' => $request->data_inscricao,
         ]);

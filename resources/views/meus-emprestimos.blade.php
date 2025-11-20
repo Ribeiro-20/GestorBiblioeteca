@@ -9,18 +9,18 @@
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            
+
             <!-- Mensagens -->
             <div id="mensagem" class="hidden mb-6"></div>
 
             <!-- Tabs Navigation -->
             <div class="bg-white rounded-t-2xl shadow-md border-b border-gray-200">
                 <div class="flex overflow-x-auto">
-                    <button onclick="mostrarAba('ativos')" id="tab-ativos" 
+                    <button onclick="mostrarAba('ativos')" id="tab-ativos"
                             class="tab-button flex-1 px-6 py-4 font-semibold text-purple-600 border-b-2 border-purple-600 whitespace-nowrap">
                         <i class="fas fa-book-open mr-2"></i>Empréstimos Ativos
                     </button>
-                    <button onclick="mostrarAba('historico')" id="tab-historico" 
+                    <button onclick="mostrarAba('historico')" id="tab-historico"
                             class="tab-button flex-1 px-6 py-4 font-semibold text-gray-600 hover:text-purple-600 whitespace-nowrap">
                         <i class="fas fa-history mr-2"></i>Histórico
                     </button>
@@ -29,7 +29,7 @@
 
             <!-- Tab Content Container -->
             <div class="bg-white rounded-b-2xl shadow-md">
-                
+
                 <!-- Aba Empréstimos Ativos -->
                 <div id="aba-ativos" class="p-8">
                     <div id="loading-ativos" class="text-center py-16">
@@ -41,7 +41,7 @@
                         <i class="fas fa-inbox text-gray-300 text-6xl mb-4"></i>
                         <h4 class="text-xl font-semibold text-gray-600 mb-2">Nenhum empréstimo ativo</h4>
                         <p class="text-gray-500">Não possui livros emprestados no momento</p>
-                        <a href="{{ route('biblioteca') }}" 
+                        <a href="{{ route('biblioteca') }}"
                            class="inline-block mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg px-6 py-3 hover:from-purple-700 hover:to-indigo-700 font-semibold transition">
                             <i class="fas fa-search mr-2"></i>Pesquisar Livros
                         </a>
@@ -88,7 +88,7 @@
                 btn.classList.remove('text-purple-600', 'border-b-2', 'border-purple-600');
                 btn.classList.add('text-gray-600');
             });
-            
+
             const tabAtiva = document.getElementById(`tab-${aba}`);
             tabAtiva.classList.add('text-purple-600', 'border-b-2', 'border-purple-600');
             tabAtiva.classList.remove('text-gray-600');
@@ -105,16 +105,16 @@
                 console.log('A carregar empréstimos de:', `${API_BASE}/emprestimos/meus`);
                 const response = await axios.get(`${API_BASE}/emprestimos/meus`);
                 console.log('Resposta recebida:', response.data);
-                
+
                 if (response.data.success) {
                     const emprestimos = response.data.data;
                     console.log(`Total de empréstimos: ${emprestimos.length}`);
-                    
+
                     // Separar ativos e histórico
                     const ativos = emprestimos.filter(e => e.estado === 'ativo');
                     const historico = emprestimos.filter(e => e.estado !== 'ativo');
                     console.log(`Ativos: ${ativos.length}, Histórico: ${historico.length}`);
-                    
+
                     renderizarEmprestimosAtivos(ativos);
                     renderizarHistorico(historico);
                 } else {
@@ -143,7 +143,7 @@
             }
 
             container.classList.remove('hidden');
-            
+
             // Verificar se há atrasados
             const atrasados = emprestimos.filter(e => e.atrasado || (new Date(e.data_limite) < new Date()));
             const alertaAtrasados = atrasados.length > 0 ? `
@@ -164,8 +164,8 @@
                     ${emprestimos.map(emp => {
                         const atrasado = emp.atrasado || (new Date(emp.data_limite) < new Date() && emp.estado === 'ativo');
                         const diasAtraso = emp.dias_atraso || calcularDiasAtraso(emp.data_limite);
-                        const imgUrl = emp.livro.imagem || 'https://via.placeholder.com/200x300?text=Sem+Capa';
-                        
+                        const imgUrl = emp.livro.imagem || '/images/sem-capa.svg';
+
                         return `
                             <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border ${atrasado ? 'border-red-300' : 'border-gray-200'}">
                                 ${atrasado ? `
@@ -174,16 +174,16 @@
                                     </div>
                                 ` : ''}
                                 <div class="relative">
-                                    <img src="${imgUrl}" alt="${emp.livro.titulo}" 
-                                         class="w-full h-64 object-cover" 
-                                         onerror="this.src='https://via.placeholder.com/200x300?text=Sem+Capa'">
+                                     <img src="${imgUrl}" alt="${emp.livro.titulo}"
+                                         class="w-full h-64 object-cover"
+                                         onerror="this.src='/images/sem-capa.svg'">
                                 </div>
                                 <div class="p-4">
                                     <h4 class="font-bold text-gray-900 text-lg mb-2 line-clamp-2">${emp.livro.titulo}</h4>
                                     <p class="text-gray-600 text-sm mb-4 flex items-center">
                                         <i class="fas fa-user mr-2 text-purple-600"></i>${emp.livro.autor || 'Autor desconhecido'}
                                     </p>
-                                    
+
                                     <div class="space-y-2 mb-4">
                                         <div class="flex items-center text-sm">
                                             <i class="fas fa-calendar-plus text-gray-400 mr-2"></i>
@@ -208,7 +208,7 @@
                                             </div>
                                         ` : ''}
                                     </div>
-                                    
+
                                     <div class="mt-auto pt-3 border-t border-gray-200">
                                         <p class="text-xs text-gray-500 text-center">
                                             <i class="fas fa-info-circle mr-1"></i>
@@ -258,7 +258,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             ${emp.livro.imagem ? `
-                                                <img src="${emp.livro.imagem}" alt="${emp.livro.titulo}" 
+                                                <img src="${emp.livro.imagem}" alt="${emp.livro.titulo}"
                                                      class="w-12 h-16 object-cover rounded mr-3"
                                                      onerror="this.style.display='none'">
                                             ` : ''}
@@ -275,7 +275,7 @@
                                         ${emp.data_devolucao ? formatarData(emp.data_devolucao) : '-'}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full 
+                                        <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full
                                             ${emp.estado === 'devolvido' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
                                             <i class="fas ${emp.estado === 'devolvido' ? 'fa-check-circle' : 'fa-circle'} mr-1"></i>
                                             ${emp.estado}
@@ -291,12 +291,12 @@
 
         function mostrarMensagem(texto, tipo) {
             const mensagem = document.getElementById('mensagem');
-            
+
             const icon = tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
             const bgColor = tipo === 'success' ? 'bg-green-50 border-green-500' : 'bg-red-50 border-red-500';
             const textColor = tipo === 'success' ? 'text-green-800' : 'text-red-800';
             const iconColor = tipo === 'success' ? 'text-green-500' : 'text-red-500';
-            
+
             mensagem.innerHTML = `
                 <div class="${bgColor} border-l-4 rounded-lg p-6">
                     <div class="flex items-center">
@@ -306,7 +306,7 @@
                 </div>
             `;
             mensagem.classList.remove('hidden');
-            
+
             setTimeout(() => {
                 mensagem.classList.add('hidden');
             }, 5000);

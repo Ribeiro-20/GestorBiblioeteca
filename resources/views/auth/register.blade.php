@@ -82,32 +82,6 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <!-- Tipo -->
-        <div>
-            <x-input-label for="tipo" :value="__('Tipo de Conta')" class="text-gray-700 font-medium mb-2" />
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-user-tag text-gray-400"></i>
-                </div>
-                <select id="tipo" 
-                    name="tipo" 
-                    class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition bg-white" 
-                    required>
-                    <option value="">Selecione o tipo</option>
-                    <option value="admin" {{ old('tipo') == 'admin' ? 'selected' : '' }}>
-                        <i class="fas fa-crown"></i> Administrador
-                    </option>
-                    <option value="bibliotecario" {{ old('tipo') == 'bibliotecario' ? 'selected' : '' }}>
-                        <i class="fas fa-book-reader"></i> Bibliotecário
-                    </option>
-                    <option value="leitor" {{ old('tipo') == 'leitor' ? 'selected' : '' }}>
-                        <i class="fas fa-user"></i> Leitor
-                    </option>
-                </select>
-            </div>
-            <x-input-error :messages="$errors->get('tipo')" class="mt-2" />
-        </div>
-
         <!-- Submit Button -->
         <div class="space-y-4 pt-2">
             <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transform transition hover:scale-[1.02]">

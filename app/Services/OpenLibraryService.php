@@ -23,25 +23,27 @@ class OpenLibraryService
 
             // Cache por 30 dias
             $cacheKey = "openlib_isbn_{$isbn}";
-            
-            return Cache::remember($cacheKey, 60 * 60 * 24 * 30, function () use ($isbn) {
-                $url = self::BASE_URL . "/api/books?bibkeys=ISBN:{$isbn}&format=json&jscmd=data";
-                
-                $verify = filter_var(env('HTTP_VERIFY', true), FILTER_VALIDATE_BOOLEAN);
-                $response = Http::withOptions(['verify' => $verify])->timeout(10)->get($url);
 
-                if (!$response->successful() || empty($response->json())) {
+            return Cache::remember($cacheKey, 60 * 60 * 24 * 30, function () use ($isbn) {
+                $verify = filter_var(env('HTTP_VERIFY', true), FILTER_VALIDATE_BOOLEAN);
+                $response = Http::withOptions(['verify' => $verify])->timeout(10)->get(self::SEARCH_URL, [
+                    'isbn' => $isbn,
+                    'fields' => 'key,title,author_name,cover_i,first_publish_year,isbn,publisher,subject,number_of_pages_median',
+                    'limit' => 1
+                ]);
+
+                if (!$response->successful()) {
                     return null;
                 }
 
                 $data = $response->json();
-                $bookKey = "ISBN:{$isbn}";
 
-                if (!isset($data[$bookKey])) {
+                if (!isset($data['docs']) || empty($data['docs'])) {
                     return null;
                 }
 
-                return $this->formatarDados($data[$bookKey], $isbn);
+                // Retornar o primeiro resultado formatado
+                return $this->formatarDadosBusca($data['docs'][0]);
             });
         } catch (Exception $e) {
             report($e);
@@ -58,7 +60,8 @@ class OpenLibraryService
             $verify = filter_var(env('HTTP_VERIFY', true), FILTER_VALIDATE_BOOLEAN);
             $response = Http::withOptions(['verify' => $verify])->timeout(10)->get(self::SEARCH_URL, [
                 'title' => $titulo,
-                'limit' => $limit
+                'limit' => $limit,
+                'fields' => 'key,title,author_name,cover_i,first_publish_year,isbn,publisher,subject,number_of_pages_median'
             ]);
 
             if (!$response->successful()) {
@@ -66,7 +69,7 @@ class OpenLibraryService
             }
 
             $data = $response->json();
-            
+
             if (!isset($data['docs']) || empty($data['docs'])) {
                 return [];
             }
@@ -89,7 +92,8 @@ class OpenLibraryService
             $verify = filter_var(env('HTTP_VERIFY', true), FILTER_VALIDATE_BOOLEAN);
             $response = Http::withOptions(['verify' => $verify])->timeout(10)->get(self::SEARCH_URL, [
                 'author' => $autor,
-                'limit' => $limit
+                'limit' => $limit,
+                'fields' => 'key,title,author_name,cover_i,first_publish_year,isbn,publisher,subject,number_of_pages_median'
             ]);
 
             if (!$response->successful()) {
@@ -97,7 +101,7 @@ class OpenLibraryService
             }
 
             $data = $response->json();
-            
+
             if (!isset($data['docs']) || empty($data['docs'])) {
                 return [];
             }
@@ -120,7 +124,8 @@ class OpenLibraryService
             $verify = filter_var(env('HTTP_VERIFY', true), FILTER_VALIDATE_BOOLEAN);
             $response = Http::withOptions(['verify' => $verify])->timeout(10)->get(self::SEARCH_URL, [
                 'q' => $query,
-                'limit' => $limit
+                'limit' => $limit,
+                'fields' => 'key,title,author_name,cover_i,first_publish_year,isbn,publisher,subject,number_of_pages_median'
             ]);
 
             if (!$response->successful()) {
@@ -128,7 +133,7 @@ class OpenLibraryService
             }
 
             $data = $response->json();
-            
+
             if (!isset($data['docs']) || empty($data['docs'])) {
                 return [];
             }
@@ -190,8 +195,8 @@ class OpenLibraryService
             'ano_publicacao' => $this->extrairAno($data['publish_date'] ?? null),
             'editora' => isset($data['publishers'][0]['name']) ? $data['publishers'][0]['name'] : '',
             'numero_paginas' => $data['number_of_pages'] ?? null,
-            'imagem' => isset($data['cover']['large']) ? $data['cover']['large'] : 
-                       (isset($data['cover']['medium']) ? $data['cover']['medium'] : 
+            'imagem' => isset($data['cover']['large']) ? $data['cover']['large'] :
+                       (isset($data['cover']['medium']) ? $data['cover']['medium'] :
                        (isset($data['cover']['small']) ? $data['cover']['small'] : null)),
             'url' => $data['url'] ?? null,
         ];
@@ -204,7 +209,18 @@ class OpenLibraryService
     {
         $isbn = null;
         if (isset($item['isbn']) && !empty($item['isbn'])) {
-            $isbn = $item['isbn'][0];
+            // Escolher primeiro ISBN válido (10 ou 13 dígitos) e normalizar removendo hífens/espaços
+            foreach ($item['isbn'] as $candidate) {
+                $clean = preg_replace('/[^0-9X]/', '', (string) $candidate);
+                if (in_array(strlen($clean), [10, 13], true)) {
+                    $isbn = $clean;
+                    break;
+                }
+            }
+            // fallback: usar o primeiro elemento (normalizado) se nenhum válido encontrado
+            if (!$isbn) {
+                $isbn = preg_replace('/[^0-9X]/', '', (string) $item['isbn'][0]);
+            }
         }
 
         $coverId = $item['cover_i'] ?? null;

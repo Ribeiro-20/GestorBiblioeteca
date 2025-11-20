@@ -13,10 +13,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Chama os seeders na ordem correta
-        $this->call([
-            UsersTableSeeder::class,
-            LivrosSeeder::class,
-        ]);
+        \App\Models\User::create([
+        'nome' => 'jorge',
+        'email' => 'jorge@gmail.com',
+        'password' => bcrypt('jorge@gmail.com'),
+    ]);
     }
 }

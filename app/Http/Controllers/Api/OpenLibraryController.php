@@ -133,7 +133,10 @@ class OpenLibraryController extends Controller
      */
     public function importarPorISBN(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // Normalizar ISBN removendo espaços e hífens antes de validar
+        $normalizedIsbn = preg_replace('/[^0-9X]/', '', (string) $request->isbn);
+
+        $validator = Validator::make(['isbn' => $normalizedIsbn], [
             'isbn' => 'required|string|min:10|max:13|unique:livros,isbn'
         ]);
 
@@ -144,7 +147,7 @@ class OpenLibraryController extends Controller
             ], 422);
         }
 
-        $dadosLivro = $this->openLibraryService->buscarPorISBN($request->isbn);
+        $dadosLivro = $this->openLibraryService->buscarPorISBN($normalizedIsbn);
 
         if (!$dadosLivro) {
             return response()->json([
@@ -168,7 +171,8 @@ class OpenLibraryController extends Controller
         $livro = \App\Models\Livro::create([
             'titulo' => $dadosLivro['titulo'],
             'autor' => $dadosLivro['autor'],
-            'isbn' => $dadosLivro['isbn'],
+            // Garantir que o ISBN gravado seja o normalizado
+            'isbn' => preg_replace('/[^0-9X]/', '', (string) ($dadosLivro['isbn'] ?? $normalizedIsbn)),
             'categoria' => $dadosLivro['categoria'],
             'ano_publicacao' => $anoPublicacao,
             'imagem' => $dadosLivro['imagem'],

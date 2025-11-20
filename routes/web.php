@@ -6,8 +6,9 @@ use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/auth.php';
 
+// Ao abrir o site, redirecionar para a página de login
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/biblioteca', function () {
